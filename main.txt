@@ -1,0 +1,567 @@
+clc;
+clear all;
+close all;
+
+block_size=40;
+
+rgbImage1 = imread('peppers.png');
+
+rgbImage1=imresize(rgbImage1,[360 360]);
+
+rgbR=rgbImage1(:,:,1);
+rgbG=rgbImage1(:,:,2);
+rgbB=rgbImage1(:,:,3);
+
+workspace; 
+fontSize = 20; 
+
+OriMat=[8,2,6,3,5,1,4,9,7;
+    4,1,3,8,9,7,2,5,6;
+    7,5,9,6,2,4,1,8,3;
+    5,6,4,7,1,3,8,2,9;
+    1,7,2,9,6,8,5,3,4;
+    3,9,8,5,4,2,6,7,1;
+    2,3,1,4,8,9,7,6,5;
+    6,8,7,1,3,5,9,4,2;
+    9,4,5,2,7,6,3,1,8];
+
+% getting rol col of orimat
+
+[row col] = size(OriMat);
+
+%=======================parametric representation==========================
+
+%Representation for row digit
+
+for r = 1 : row
+for c = 1 : col
+    RD(r,c)= OriMat(r,c)+ (r*10);
+end
+end
+
+display(RD);
+
+%Representation for digit row
+
+for r = 1 : row
+for c = 1 : col
+    DR(r,c)= (OriMat(r,c)*10)+ r;
+end
+end
+
+display(DR);
+
+%Representation for column digit
+
+for r = 1 : row
+for c = 1 : col
+    CD(r,c)= OriMat(r,c)+ (c*10);
+end
+end
+
+display(CD);
+
+%Representation for digit column
+
+for r = 1 : row
+for c = 1 : col
+    DC(r,c)= (OriMat(r,c)*10)+ c;
+end
+end
+
+display(DC);
+
+%Representation for block digit
+
+for r = 1 : row
+for c = 1 : col
+        if(r<=3)&&(c<=3)
+        BD(r,c)= OriMat(r,c)+ (1*10);
+        else if(r>=4)&&(r<=6)&&(c<=3)
+        BD(r,c)= OriMat(r,c)+ (2*10);
+        else if(r>=7)&&(r<=9)&&(c<=3)
+        BD(r,c)= OriMat(r,c)+ (3*10);
+        else if(r<=3)&&(c>=4)&&(c<=6) 
+        BD(r,c)= OriMat(r,c)+ (4*10);   
+        else if(r>=4)&&(r<=6)&&(c>=4)&&(c<=6)
+        BD(r,c)= OriMat(r,c)+ (5*10);
+        else if(r>=7)&&(r<=9)&&(c>=4)&&(c<=6)
+        BD(r,c)= OriMat(r,c)+ (6*10);
+        else if(r<=3)&&(c>=7)&&(c<=9)
+        BD(r,c)= OriMat(r,c)+ (7*10);
+        else if(r>=4)&&(r<=6)&&(c>=7)&&(c<=9)
+        BD(r,c)= OriMat(r,c)+ (8*10);
+        else if(r>=7)&&(r<=9)&&(c>=7)&&(c<=9)
+        BD(r,c)= OriMat(r,c)+ (9*10);
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+end
+
+display(BD);
+
+%Representation for digit block
+
+for r = 1 : row
+for c = 1 : col
+        if(r<=3)&&(c<=3)
+        DB(r,c)= (OriMat(r,c)*10)+ 1;
+        else if(r>=4)&&(r<=6)&&(c<=3)
+        DB(r,c)= (OriMat(r,c)*10)+ 2;
+        else if(r>=7)&&(r<=9)&&(c<=3)
+        DB(r,c)= (OriMat(r,c)*10)+ 3;
+        else if(r<=3)&&(c>=4)&&(c<=6) 
+        DB(r,c)= (OriMat(r,c)*10)+ 4;   
+        else if(r>=4)&&(r<=6)&&(c>=4)&&(c<=6)
+        DB(r,c)= (OriMat(r,c)*10)+ 5;
+        else if(r>=7)&&(r<=9)&&(c>=4)&&(c<=6)
+        DB(r,c)= (OriMat(r,c)*10)+ 6;
+        else if(r<=3)&&(c>=7)&&(c<=9)
+        DB(r,c)= (OriMat(r,c)*10)+ 7;
+        else if(r>=4)&&(r<=6)&&(c>=7)&&(c<=9)
+        DB(r,c)= (OriMat(r,c)*10)+ 8;
+        else if(r>=7)&&(r<=9)&&(c>=7)&&(c<=9)
+        DB(r,c)= (OriMat(r,c)*10)+ 9;
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+            end
+end
+
+display(DB);   
+     
+%======================fixed representation================================
+
+% fixed representation row and col 
+
+FixMat1=[11,12,13,14,15,16,17,18,19;
+    21,22,23,24,25,26,27,28,29;
+    31,32,33,34,35,36,37,38,39;
+    41,42,43,44,45,46,47,48,49;
+    51,52,53,54,55,56,57,58,59;
+    61,62,63,64,65,66,67,68,69;
+    71,72,73,74,75,76,77,78,79;
+    81,82,83,84,85,86,87,88,89;
+    91,92,93,94,95,96,97,98,99;];
+
+display(FixMat1);
+
+% fixed representation block and grid
+
+FixMat2=[11,14,17,41,44,47,71,74,77;
+         12,15,18,42,45,48,72,75,78;
+         13,16,19,43,46,49,73,76,79;
+         21,24,27,51,54,57,81,84,87;
+         22,25,28,52,55,58,82,85,88;
+         23,26,29,53,56,59,83,86,89;
+         31,34,37,61,64,67,91,94,97;
+         32,35,38,62,65,68,92,95,98;
+         33,36,39,63,66,69,93,96,99];
+     
+display(FixMat2);
+
+sprintf('\n 1.ROW DIGIT \n 2.DIGIT ROW \n 3.COLUMN DIGIT \n 4.DIGIT COLUMN \n 5.BLOCK DIGIT \n 6.DIGIT BLOCK')
+
+x= input('SELECT THE PARAMETERIC REPRESENTATION? ') ;
+
+if( x == 1)
+    M1 = RD;
+else if( x == 2)
+        M1 = DR;
+else if( x == 3)
+        M1 = CD;
+else if( x == 4)
+        M1 = DC;
+else if( x == 5)
+        M1 = BD;
+else if( x == 6)
+        M1 = DB;
+    else
+        M1 = DB;
+    end
+    end
+    end
+    end
+    end
+end
+
+sprintf('\n 1.ROW COLUMN \n 2.BLOCK GRID')
+
+y= input('SELECT THE FIXED REPRESENTATION? ') ;
+
+if( y == 1)
+    M2 = FixMat1;
+else 
+    M2 = FixMat2;
+end
+
+sprintf('\n 1.FORWARD MAPPING \n 2.REVERSE MAPPING')
+
+z = input('SELECT THE MAPPING METHODOLOGY? ') ;
+
+if( z == 2)
+    t=M1;
+    M1=M2;
+    M2=t;
+end
+
+%Convert matrix to cell. Here block size is 40
+%(360/40=9)
+%We need 9X9 sudoku
+
+C1 = mat2cell(rgbR, repmat(block_size,[1 size(rgbR,1)/block_size]),...
+     repmat(block_size,[1 size(rgbR,2)/block_size]));
+ 
+ % we extract a value from one sudoku puzzle and find where it is placed in
+ % second sudoku puzzle. Shift that cell array present in (r1,c1) to
+ % (r2,c2)
+           for r1 = 1 : 9
+	       for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2] = find(M2 == val1);
+                  C2{r2,c2} = C1{r1,c1};   
+           end
+           end
+
+%Again convert cell to matrix
+rgbRR=cell2mat(C2);
+
+%Now we have to perform bit scrambling.
+% Convert 2D into 1D array
+
+%Extract 1st row of rgbRR
+RR = rgbRR(1,:);
+
+%Joining all the rows and forming 1D array
+for i = 2 : 360
+    RR = horzcat(RR,rgbRR(i,:));
+end
+
+%Extract 1st digit from 1D array and Convert it into binary 
+R = de2bi(RR(1));
+
+%Append zeros, so we get 8 bit length binary 
+R = [R,zeros(1,8-length(R))];
+
+%Convert it into column
+R = R(:);
+
+%Do the same for 2 to 129600 elements
+for i = 2 : 129600
+    R1 = de2bi(RR(i));
+    R1 = [R1,zeros(1,8-length(R1))];
+    R1 = R1(:);  
+    R = horzcat(R,R1);
+end
+
+%Now reshape it according
+NR = reshape(R,900,1152);
+
+% Again convert matrix to cell. 
+% Blocksize of row is 100. (900/100=9)
+% Blocksize of column is 128. (1152/128=9)
+
+C1NR = mat2cell(NR, repmat(100,[1 size(NR,1)/100]),...
+     repmat(128,[1 size(NR,2)/128])); 
+ 
+ % we extract a value from one sudoku puzzle and find where it is placed in
+ % second sudoku puzzle. Shift that cell array present in (r1,c1) to
+ % (r2,c2)
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C2NR{r2,c2} = C1NR{r1,c1};               
+               end
+               end  
+
+%Convert cell to matrix
+rgbRRNR=cell2mat(C2NR);
+
+%Reshape into 8 X 129600 
+NRREV = reshape(rgbRRNR,8,129600);
+
+%Extract 1st column
+RREV = NRREV(:,1);
+
+%Perform Transpose
+RREV1 = RREV.';
+
+%Using fliplr reverse it
+RREV2 = fliplr(RREV1);
+
+%Conver it into string
+RREV3 = num2str(RREV2);
+
+%Convert it into binary to decimal
+RREV4 = bin2dec(RREV3);
+
+% perform the same for column 2 to 129600
+for i = 2 : 129600
+    RREV5 = NRREV(:,i);
+    RREV6 = RREV5.';
+    RREV7 = fliplr(RREV6);
+    RREV8 = num2str(RREV7);
+    RREV9 = bin2dec(RREV8);
+    RREV4 = horzcat(RREV4,RREV9);
+end
+
+%Finally, reshape it to original size
+RREVFINAL=reshape(RREV4,360,360);
+
+
+%Do the same for GREEN
+
+C3 = mat2cell(rgbG, repmat(block_size,[1 size(rgbG,1)/block_size]),...
+     repmat(block_size,[1 size(rgbG,2)/block_size]));
+ 
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C4{r2,c2} = C3{r1,c1}; 
+               end
+               end 
+               
+rgbGG=cell2mat(C4);
+
+GG = rgbGG(1,:);
+
+for i = 2 : 360
+    GG = horzcat(GG,rgbGG(i,:));
+end
+
+G = de2bi(GG(1));
+
+G = [G,zeros(1,8-length(G))];
+
+G = G(:);
+
+for i = 2 : 129600
+    G1 = de2bi(GG(i));
+    G1 = [G1,zeros(1,8-length(G1))];
+    G1 = G1(:);  
+    G = horzcat(G,G1);
+end
+
+NG = reshape(G,900,1152);
+
+C3NG = mat2cell(NG, repmat(100,[1 size(NG,1)/100]),...
+     repmat(128,[1 size(NG,2)/128]));
+ 
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C4NG{r2,c2} = C3NG{r1,c1};               
+               end
+               end
+               
+rgbGGNG=cell2mat(C4NG);
+
+NGREV = reshape(rgbGGNG,8,129600);
+
+GREV = NGREV(:,1);
+
+GREV1 = GREV.';
+
+GREV2 = fliplr(GREV1);
+
+GREV3 = num2str(GREV2);
+
+GREV4 = bin2dec(GREV3);
+
+for i = 2 : 129600
+    GREV5 = NGREV(:,i);
+    GREV6 = GREV5.';
+    GREV7 = fliplr(GREV6);
+    GREV8 = num2str(GREV7);
+    GREV9 = bin2dec(GREV8);
+    GREV4 = horzcat(GREV4,GREV9);
+end
+
+GREVFINAL=reshape(GREV4,360,360);
+
+% Do the same for BLUE
+
+C5 = mat2cell(rgbB, repmat(block_size,[1 size(rgbB,1)/block_size]),...
+     repmat(block_size,[1 size(rgbB,2)/block_size]));
+ 
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C6{r2,c2} = C5{r1,c1};               
+               end
+               end       
+               
+rgbBB=cell2mat(C6);
+
+BB = rgbBB(1,:);
+
+for i = 2 : 360
+     BB = horzcat(BB,rgbBB(i,:));
+end
+
+B = de2bi(BB(1));
+
+B = [B,zeros(1,8-length(B))];
+
+B = B(:);
+
+for i = 2 : 129600
+    B1 = de2bi(BB(i));
+    B1 = [B1,zeros(1,8-length(B1))];
+    B1 = B1(:);  
+    B = horzcat(B,B1);
+end
+
+NB = reshape(B,900,1152);
+
+C5NB = mat2cell(NB, repmat(100,[1 size(NB,1)/100]),...
+     repmat(128,[1 size(NB,2)/128]));
+ 
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C6NB{r2,c2} = C5NB{r1,c1};               
+               end
+               end      
+   
+rgbBBNB=cell2mat(C6NB);
+
+NBREV = reshape(rgbBBNB,8,129600);
+
+BREV = NBREV(:,1);
+
+BREV1 = BREV.';
+
+BREV2 = fliplr(BREV1);
+
+BREV3 = num2str(BREV2);
+
+BREV4 = bin2dec(BREV3);
+
+for i = 2 : 129600
+    BREV5 = NBREV(:,i);
+    BREV6 = BREV5.';
+    BREV7 = fliplr(BREV6);
+    BREV8 = num2str(BREV7);
+    BREV9 = bin2dec(BREV8);
+    BREV4 = horzcat(BREV4,BREV9);
+end
+
+BREVFINAL=reshape(BREV4,360,360);  
+
+%Descrambling 
+
+block_size=40;
+
+%Blockwise scrambling result
+image_RGB = cat(3, rgbRR, rgbGG, rgbBB);
+
+%resizing into 360 X 360
+image_RGB=imresize(image_RGB,[360 360]);
+
+%Splitting into 3 channels
+rgbR1=image_RGB(:,:,1);
+rgbG2=image_RGB(:,:,2);
+rgbB3=image_RGB(:,:,3);
+
+C22 = mat2cell(rgbR1, repmat(block_size,[1 size(rgbR1,1)/block_size]),...
+     repmat(block_size,[1 size(rgbR1,2)/block_size]));
+ 
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2] = find(M2 == val1);
+                  C11{r1,c1} = C22{r2,c2};   
+               end
+               end
+
+rgbRR1=cell2mat(C11);
+
+C44 = mat2cell(rgbG2, repmat(block_size,[1 size(rgbG2,1)/block_size]),...
+     repmat(block_size,[1 size(rgbG2,2)/block_size]));
+
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C33{r1,c1} = C44{r2,c2}; 
+               end
+               end
+ 
+rgbGG2=cell2mat(C33);
+
+C66 = mat2cell(rgbB3, repmat(block_size,[1 size(rgbB3,1)/block_size]),...
+     repmat(block_size,[1 size(rgbB3,2)/block_size]));
+  
+               for r1 = 1 : 9
+	           for c1 = 1 : 9
+                  val1 = M1(r1,c1);
+                  [r2,c2]=find(M2 == val1);
+                  C55{r1,c1} = C66{r2,c2};               
+               end
+               end
+
+rgbBB3=cell2mat(C55);
+
+%Original Image
+figure(1);
+
+subplot(1,1,1);
+
+imshow(rgbImage1),title('ORIGINAL IMAGE');  
+
+%Blockwise Scrambling image
+figure(2);
+
+subplot(1,1,1);
+set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
+set(gca, 'FontSize', 20);
+imshow(image_RGB),title('BLOCKWISE SCRAMBLED IMAGE');  
+
+output_folder = 'C:\Users\vishali\Desktop\IMAGE SCRAMBLE';
+outputFileName = fullfile(output_folder, ['Blockwise_scrambling image' num2str(1) '.jpg']);
+imwrite(image_RGB, outputFileName);
+
+%Bitwise Scrambling image
+figure(3);
+subplot(1,1,1);
+image_RGB1 = cat(3, RREVFINAL, GREVFINAL, BREVFINAL);
+image_RGB1 = uint8(image_RGB1);
+imshow(image_RGB1),title('BITWISE SCRAMBLED IMAGE');  
+
+output_folder = 'C:\Users\vishali\Desktop\IMAGE SCRAMBLE';
+outputFileName = fullfile(output_folder, ['Bitwise scrambling image' num2str(1) '.jpg']);
+imwrite(image_RGB1, outputFileName);
+
+%Descrambled image
+figure(4);
+subplot(1,1,1);
+set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
+deimage_RGB = cat(3, rgbRR1, rgbGG2, rgbBB3);
+imshow(deimage_RGB),title('DESCRAMBLED IMAGE');  
+ 
+%writing descrambled image
+output_folder = 'C:\Users\vishali\Desktop\IMAGE SCRAMBLE';
+outputFileName = fullfile(output_folder, ['Descrambled image' num2str(1) '.jpg']);
+imwrite(deimage_RGB, outputFileName);
+
+
+
